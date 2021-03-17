@@ -15,5 +15,5 @@ export default {
   },
   get (params) {
     return Api().get('api/users', params)
-  },
+  }
 }
