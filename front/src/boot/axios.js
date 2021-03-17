@@ -1,16 +1,20 @@
 // import Vue from 'vue'
 import axios from 'axios'
 
+let withCredentials = false;
 
-window.csrf_token = "csrf_token()"
+// const token = '';
 
-axios.defaults.headers.common = {
-  'X-Requested-With': 'XMLHttpRequest',
-  'X-CSRF-TOKEN': document.head.querySelector('meta[name="csrf-token"]')
+const headers = {
+  //  'X-CSRF-TOKEN': localStorage.getItem('csrf'),
+  //  'Access-Control-Allow-Origin': '*'
 };
+
 
 export default () => {
   return axios.create({
-    baseURL: 'http://127.0.0.1:8000'
+    baseURL: 'http://127.0.0.1:8000',
+    // withCredentials: withCredentials,
+    // headers: headers
   })
 }

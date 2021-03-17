@@ -25,7 +25,7 @@
             {{ props.row.age }}
           </q-td>
           <q-td key="ops" :props="props">
-            <a class="text-blue" style="cursor: pointer; padding: 5px;" @click="edit(props.row.id)"> <q-icon size="md" name="edit"/>
+            <a class="text-blue" style="cursor: pointer; padding: 5px;" @click="edit(props.row)"> <q-icon size="md" name="edit"/>
               <q-tooltip :delay="1000" :offset="[0, 10]">editar</q-tooltip>
             </a>
             <a class="text-red" style="cursor: pointer; padding: 5px;" @click="del(props.row.id)"> <q-icon size="md" name="delete"/>
@@ -73,7 +73,12 @@
               <q-icon name="account_circle" color="primary" />
             </template>
           </q-input>
-          <q-input color="grey-3" bg-color="white" label-color="primary" v-model="user.password" filled :type="isPwd ? 'password' : 'text'" label="Clave" required :rules="[val => !!val || 'Este campo es necesario']">
+          <q-input color="grey-3" bg-color="white" label-color="primary" filled v-model="user.gender" label="Gender" required :rules="[val => !!val || 'Este campo es necesario']">
+            <template v-slot:append>
+              <q-icon name="account_circle" color="primary" />
+            </template>
+          </q-input>
+          <q-input color="grey-3" v-if="user.id === ''" bg-color="white" label-color="primary" v-model="user.password" filled :type="isPwd ? 'password' : 'text'" label="Clave" required :rules="[val => !!val || 'Este campo es necesario']">
             <template v-slot:append>
               <q-icon color="primary" :name="isPwd ? 'visibility_off' : 'visibility'" @click="isPwd = !isPwd"/>
             </template>
@@ -100,19 +105,20 @@ export default {
         name: '',
         email: '',
         age: '',
-        address: ''
+        address: '',
+        gender: ''
       },
       filter: '',
       columns: [
         { name: 'id', align: 'center', label: 'id', field: 'id', sortable: true },
         { name: 'name', align: 'center', label: 'Nombre', field: 'name', sortable: true },
         { name: 'email', align: 'center', label: 'Email', field: 'email', sortable: true },
-        { name: 'rank', align: 'center', label: 'Tipo', field: 'rank', sortable: true },
         { name: 'ops', align: 'center', label: 'Opciones', field: 'ops', sortable: true }
       ],
       data: [],
       modal: false,
-      isPwd: true
+      isPwd: true,
+      csrf: ''
     }
   },
   mounted () {
@@ -142,6 +148,27 @@ export default {
     },
     openModal () {
       this.modal = true
+    },
+    edit (obj) {
+      this.user.id = obj.id 
+      this.user.name = obj.name 
+      this.user.email = obj.email
+      this.user.gender = obj.gender
+      // this.user.password = obj.password
+      this.user.age = obj.age
+      this.user.address = obj.address
+      this.modal = true
+    },
+    async del (id) {
+      try {
+        // if (this.user.id !== '') {
+        // edit mode
+          await UserService.delete({id: id})
+        // }
+      } catch (error) {
+        console.log(error)
+      }
+      this.getUsers()
     }
   }
 }

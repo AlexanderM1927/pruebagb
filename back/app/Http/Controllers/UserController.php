@@ -24,7 +24,7 @@ class UserController extends Controller
 
     public function store(Request $request) {
 
-        try {
+        // try {
             $inputs = $request->all();
 
             $this->validate($request, [
@@ -47,9 +47,9 @@ class UserController extends Controller
             $user->save();
 
             return response()->json(['user' => $user, 'message' => 'CREATED'], 201);
-        } catch (\Exception $e) {
-            return response()->json(['message' => $e], 409);
-        }
+        // } catch (\Exception $e) {
+        //     return response()->json(['message' => $e], 409);
+        // }
 
         
 
@@ -61,8 +61,8 @@ class UserController extends Controller
 
             $this->validate($request, [
                 'name' => 'required|string',
-                'email' => 'required|email|unique:users',
-                'password' => 'required',
+                // 'email' => 'required|email|unique:users',
+                // 'password' => 'required',
                 'gender' => 'required',
                 'age' => 'required',
                 'address' => 'required'
@@ -71,7 +71,7 @@ class UserController extends Controller
             $user = User::where('id', $id)->update([
                 'name' => $inputs['name'],
                 'email' => $inputs['email'],
-                'password' => app('hash')->make($input['password']),
+                // 'password' => app('hash')->make($input['password']),
                 'gender' => $inputs['gender'],
                 'age' => $inputs['age'],
                 'address' => $inputs['address']
@@ -94,7 +94,12 @@ class UserController extends Controller
     }
 
     public function destroy(Request $request, $id) {
-        
+        try {
+            $user = DB::table('users')->where('id', '=', $id)->delete();;
+            return response()->json(['users' => $user, 'message' => 'DESTROYED'], 200);
+        } catch (\Exception $e) {
+            return response()->json(['message' => $e], 409);
+        }
     }
 
 
